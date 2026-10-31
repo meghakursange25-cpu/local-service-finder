@@ -64,7 +64,7 @@ function render(){
  const matches=providers.filter(p=>{
   const searchable=(p.name+" "+p.category+" "+p.description+" "+p.keywords+" "+p.area).toLowerCase();
   const areaMatch=!areaQuery||p.area.toLowerCase().includes(areaQuery)||areaQuery.includes(p.area.toLowerCase());
-  return (cat==="All"||p.category===cat)&&(!serviceQuery||searchable.includes(serviceQuery))&&areaMatch;
+  return (cat==="All"||p.category===cat)&&(!serviceQuery||serviceQuery.split(/\\s+/).filter(term=>term&&!["in","near","at","for","the","a","an","service","services"].includes(term)).every(term=>searchable.includes(term)))&&areaMatch;
  });
  cards.innerHTML=matches.length?matches.map(p=>'<article class="card"><div class="cardtop"><div class="avatar">'+p.icon+'</div><span class="tag">'+p.category+'</span></div><div><h3>'+p.name+'</h3><div class="meta">⌖ '+p.area+' (demo area)</div></div><p class="meta">'+p.description+'</p><div class="rating">ⓘ Example listing · Not verified</div><button class="btn enquire" data-name="'+p.name+'">Send an enquiry</button></article>').join(""):'<div class="empty">No matching demo listings found. Try a different service keyword or area, or choose “All categories”.</div>';
  document.querySelectorAll(".enquire").forEach(b=>b.addEventListener("click",()=>openEnquiry(b.dataset.name)));
