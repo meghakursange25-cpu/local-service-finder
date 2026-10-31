@@ -32,22 +32,54 @@ dialog{border:0;border-radius:18px;padding:25px;width:min(440px,92%);box-shadow:
 <footer><div class="wrap foot"><div><div class="brand">⌖ Local Service Finder</div><p>Making it easier to find help close to home.</p></div><div><p>Student project · Website prototype</p><p>© <span id="year"></span> Local Service Finder</p></div></div></footer>
 <dialog id="contactDialog"><button class="close" id="closeDialog" aria-label="Close">×</button><div class="eyebrow">Service enquiry</div><h3 id="dialogTitle">Contact provider</h3><p class="meta">This demo prepares an email on your device. It does not send or store enquiries.</p><form id="contactForm"><label>Your name<input id="customerName" required placeholder="Enter your name"></label><label>Your email<input id="customerEmail" type="email" required placeholder="you@example.com"></label><label>What do you need?<textarea id="customerMessage" rows="3" required placeholder="Describe the service you need"></textarea></label><button class="btn" type="submit">Prepare email</button></form></dialog>
 <script>
+/* Demo directory: these example providers are fictional and are not verified businesses. */
 const providers=[
-{name:"QuickFix Plumbing",category:"Plumbing",area:"Sample listing · Add your city",icon:"🔧",description:"Demo profile for tap, pipe and bathroom repairs.",rating:"Sample profile"},
-{name:"BrightSpark Electricians",category:"Electrical",area:"Sample listing · Add your city",icon:"💡",description:"Demo profile for lights, fans and wiring work.",rating:"Sample profile"},
-{name:"FreshNest Cleaning",category:"Cleaning",area:"Sample listing · Add your city",icon:"🧹",description:"Demo profile for home and deep cleaning.",rating:"Sample profile"},
-{name:"WoodCraft Repairs",category:"Carpentry",area:"Sample listing · Add your city",icon:"🪚",description:"Demo profile for shelves, doors and furniture.",rating:"Sample profile"},
-{name:"HomeCare Repairs",category:"Repair",area:"Sample listing · Add your city",icon:"🛠️",description:"Demo profile for small household repairs.",rating:"Sample profile"},
-{name:"PipeCare Services",category:"Plumbing",area:"Sample listing · Add your city",icon:"🚿",description:"Demo profile for leak checks and installations.",rating:"Sample profile"}
+{name:"QuickFix Plumbing",category:"Plumbing",area:"Shrirampur",icon:"🔧",description:"Tap repair, leaking pipes, bathroom fittings and water-tank connections.",keywords:"plumber plumbing pipe leak tap bathroom washbasin toilet"},
+{name:"PipeCare Services",category:"Plumbing",area:"Rahata",icon:"🚿",description:"Pipe installation, drainage cleaning and water-motor troubleshooting.",keywords:"plumber drainage blockage motor pipeline"},
+{name:"AquaFlow Plumbing",category:"Plumbing",area:"Shrirampur",icon:"🪠",description:"Demo listing for blocked drains and faucet replacement.",keywords:"plumber drain blockage faucet"},
+{name:"BrightSpark Electricians",category:"Electrical",area:"Shrirampur",icon:"💡",description:"Fan installation, switchboard repair, lights and household wiring.",keywords:"electrician electrical fan light wiring switch board"},
+{name:"SafeWire Electricals",category:"Electrical",area:"Rahata",icon:"🔌",description:"Demo listing for inverter wiring, MCB checks and electrical faults.",keywords:"electrician inverter mcb short circuit"},
+{name:"PowerPoint Electric Works",category:"Electrical",area:"Sangamner",icon:"⚡",description:"Lighting installation and small home electrical repairs.",keywords:"electrician light fitting repair"},
+{name:"FreshNest Cleaning",category:"Cleaning",area:"Shrirampur",icon:"🧹",description:"Home cleaning, kitchen cleaning, bathroom scrubbing and deep cleaning.",keywords:"cleaner cleaning housekeeping maid home kitchen bathroom"},
+{name:"ShineHome Cleaners",category:"Cleaning",area:"Rahata",icon:"🧽",description:"Demo listing for move-in cleaning and regular home cleaning.",keywords:"cleaner deep cleaning house"},
+{name:"WoodCraft Repairs",category:"Carpentry",area:"Shrirampur",icon:"🪚",description:"Door fixes, shelves, cupboard repairs and custom furniture work.",keywords:"carpenter carpentry furniture wood door cupboard shelf"},
+{name:"HandyWood Carpenter",category:"Carpentry",area:"Sangamner",icon:"🪵",description:"Furniture assembly, hinges and wooden fixture repairs.",keywords:"carpenter furniture assembly hinge"},
+{name:"HomeCare Repairs",category:"Repair",area:"Shrirampur",icon:"🛠️",description:"Small household repairs, wall fittings and general maintenance.",keywords:"handyman repair maintenance household"},
+{name:"CoolBreeze AC Service",category:"Repair",area:"Rahata",icon:"❄️",description:"Demo listing for AC servicing, filter cleaning and cooling checks.",keywords:"ac air conditioner cooling service repair"},
+{name:"ApplianceFix Center",category:"Repair",area:"Shrirampur",icon:"🧰",description:"Washing-machine, refrigerator and mixer-grinder troubleshooting.",keywords:"appliance fridge refrigerator washing machine mixer repair"},
+{name:"ColorCoat Painters",category:"Repair",area:"Sangamner",icon:"🖌️",description:"Interior painting, touch-ups and wall putty work.",keywords:"painter painting paint wall putty"},
+{name:"BugShield Pest Care",category:"Repair",area:"Shrirampur",icon:"🐜",description:"Demo listing for household pest inspection and pest-control service.",keywords:"pest control insects termites cockroach"},
+{name:"GreenLeaf Garden Help",category:"Repair",area:"Rahata",icon:"🌱",description:"Garden cleanup, plant care and basic lawn maintenance.",keywords:"gardener garden plants lawn"},
+{name:"CityRide Driver Service",category:"Repair",area:"Shrirampur",icon:"🚗",description:"Demo listing for local driver and pickup/drop assistance.",keywords:"driver taxi transport car"},
+{name:"StudyPoint Home Tutor",category:"Repair",area:"Sangamner",icon:"📚",description:"Demo listing for school-level maths, science and English tuition.",keywords:"tutor tuition teacher maths science english"},
+{name:"StyleAtHome Salon",category:"Repair",area:"Shrirampur",icon:"✂️",description:"Demo listing for basic at-home grooming and salon services.",keywords:"salon beauty haircut grooming"},
+{name:"SafeHands Home Help",category:"Cleaning",area:"Rahata",icon:"🏠",description:"Demo listing for everyday household assistance and tidying.",keywords:"home help domestic helper housekeeping"}
 ];
 let activeCategory="All";
 const cards=document.getElementById("providerCards");
-function render(){const q=(document.getElementById("filterInput").value+" "+document.getElementById("searchInput").value).trim().toLowerCase();const cat=document.getElementById("categoryFilter").value!=="All"?document.getElementById("categoryFilter").value:activeCategory;const matches=providers.filter(p=>(cat==="All"||p.category===cat)&&(!q||(p.name+" "+p.category+" "+p.description).toLowerCase().includes(q)));cards.innerHTML=matches.length?matches.map((p,i)=>'<article class="card"><div class="cardtop"><div class="avatar">'+p.icon+'</div><span class="tag">'+p.category+'</span></div><div><h3>'+p.name+'</h3><div class="meta">⌖ '+p.area+'</div></div><p class="meta">'+p.description+'</p><div class="rating">ⓘ '+p.rating+'</div><button class="btn enquire" data-name="'+p.name+'">Send an enquiry</button></article>').join(""):'<div class="empty">No matching sample listings. Try another search or category.</div>';document.querySelectorAll(".enquire").forEach(b=>b.addEventListener("click",()=>openEnquiry(b.dataset.name)))}
+function render(){
+ const serviceQuery=(document.getElementById("filterInput").value+" "+document.getElementById("searchInput").value).trim().toLowerCase();
+ const areaQuery=document.getElementById("locationInput").value.trim().toLowerCase();
+ const cat=document.getElementById("categoryFilter").value!=="All"?document.getElementById("categoryFilter").value:activeCategory;
+ const matches=providers.filter(p=>{
+  const searchable=(p.name+" "+p.category+" "+p.description+" "+p.keywords+" "+p.area).toLowerCase();
+  const areaMatch=!areaQuery||p.area.toLowerCase().includes(areaQuery)||areaQuery.includes(p.area.toLowerCase());
+  return (cat==="All"||p.category===cat)&&(!serviceQuery||searchable.includes(serviceQuery))&&areaMatch;
+ });
+ cards.innerHTML=matches.length?matches.map(p=>'<article class="card"><div class="cardtop"><div class="avatar">'+p.icon+'</div><span class="tag">'+p.category+'</span></div><div><h3>'+p.name+'</h3><div class="meta">⌖ '+p.area+' (demo area)</div></div><p class="meta">'+p.description+'</p><div class="rating">ⓘ Example listing · Not verified</div><button class="btn enquire" data-name="'+p.name+'">Send an enquiry</button></article>').join(""):'<div class="empty">No matching demo listings found. Try a different service keyword or area, or choose “All categories”.</div>';
+ document.querySelectorAll(".enquire").forEach(b=>b.addEventListener("click",()=>openEnquiry(b.dataset.name)));
+}
 function openEnquiry(name){document.getElementById("dialogTitle").textContent="Enquire with "+name;document.getElementById("contactDialog").showModal()}
 document.querySelectorAll(".category").forEach(b=>b.addEventListener("click",()=>{activeCategory=b.dataset.category;document.querySelectorAll(".category").forEach(x=>x.classList.toggle("active",x===b));document.getElementById("categoryFilter").value="All";render()}));
-document.getElementById("categoryFilter").addEventListener("change",render);document.getElementById("filterInput").addEventListener("input",render);document.getElementById("searchBtn").addEventListener("click",()=>{document.getElementById("filterInput").value="";render();document.getElementById("services").scrollIntoView({behavior:"smooth"})});document.getElementById("searchInput").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("searchBtn").click()});
+document.getElementById("categoryFilter").addEventListener("change",render);
+document.getElementById("filterInput").addEventListener("input",render);
+document.getElementById("locationInput").addEventListener("input",render);
+document.getElementById("searchBtn").addEventListener("click",()=>{document.getElementById("filterInput").value="";render();document.getElementById("services").scrollIntoView({behavior:"smooth"})});
+document.getElementById("searchInput").addEventListener("input",render);
+document.getElementById("searchInput").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("searchBtn").click()});
 document.getElementById("closeDialog").addEventListener("click",()=>document.getElementById("contactDialog").close());
 document.getElementById("contactForm").addEventListener("submit",e=>{e.preventDefault();const name=document.getElementById("customerName").value,email=document.getElementById("customerEmail").value,msg=document.getElementById("customerMessage").value,provider=document.getElementById("dialogTitle").textContent;const body=encodeURIComponent("Hello,\n\nI am "+name+" ("+email+").\n\n"+msg+"\n\nSent via Local Service Finder demo.");window.location.href="mailto:?subject="+encodeURIComponent("Enquiry: "+provider)+"&body="+body;document.getElementById("contactDialog").close()});
-document.getElementById("year").textContent=new Date().getFullYear();render();
+document.getElementById("year").textContent=new Date().getFullYear();
+render();
 </script>
 </body></html>
